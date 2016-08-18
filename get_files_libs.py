@@ -1,6 +1,8 @@
 from __future__ import print_function
 from collections import defaultdict
-import operator
+import sys
+
+from get_files_exceptions import *
 
 NETWORK = "network"
 AUTNUM = "autnum"
@@ -8,11 +10,9 @@ NOKIND = ""
 VALID_KINDS = [NOKIND, NETWORK, AUTNUM]
 MANDATORY_KEYS = ["url", "filename", "precedence", "kind", "python_object"]
 
-objects = {}
-
 
 def eprint(*args, **kwargs):
-    # print(*args, file=sys.stderr, **kwargs)
+    print(*args, file=sys.stderr, **kwargs)
     pass
 
 
@@ -53,7 +53,9 @@ class AutnumRange():
 
     def __init_from_string__(self, string):
         if type(string) is not str:
-            eprint("Argument not of type str")
+            msg = "Argument not of type str: %s" % string
+            eprint(msg)
+            raise BadArgumentException(msg)
             return
 
         if "-" in string:
@@ -208,8 +210,8 @@ def string_list_minus_string_list(asns1, asns2):
 
     res = []
 
-    autnumranges1 = [AutnumRange(string=s) for s in asns1]
-    autnumranges2 = [AutnumRange(string=s) for s in asns2]
+    autnumranges1 = [AutnumRange(string=str(s)) for s in asns1]
+    autnumranges2 = [AutnumRange(string=str(s)) for s in asns2]
 
     for autnumrange1 in autnumranges1:
         res += autnumrange1.minus_list(autnumranges2)
@@ -271,7 +273,7 @@ def object_minus_object(whole_object1, whole_object2):
     object2 = whole_object2["python_object"]
 
     if not mergeable(whole_object1, whole_object2):
-        print("Not mergeable objects")
+        eprint("Not mergeable objects")
         return defaultdict(str)
 
     kind = whole_object1["kind"]
@@ -289,9 +291,6 @@ def object_minus_object(whole_object1, whole_object2):
         c = common[k]
         l = longest[k]
 
-        # if c == l:
-        #     continue
-
         if k == "services":
             if kind == NETWORK:
                 longest[k] = c + l
@@ -299,9 +298,6 @@ def object_minus_object(whole_object1, whole_object2):
                 lowest_to_highest = sorted([whole_object1, whole_object2], key=lambda x: x["precedence"])
                 lowest = lowest_to_highest[0]
                 highest = lowest_to_highest[1]
-
-                # print(get_endpoint_list(lowest["python_object"][k]))
-                # print(get_endpoint_list(highest["python_object"][k]))
 
                 lowest_service_list = get_service_list(lowest["python_object"][k])
                 highest_service_list = get_service_list(highest["python_object"][k])
@@ -319,13 +315,7 @@ def object_minus_object(whole_object1, whole_object2):
 
 def merge_multiple(_objects):
     res = _objects[0]
-    for o in _objects[1:]:
-        res = object_minus_object(res, o)
+    for _object in _objects[1:]:
+        res = object_minus_object(res, _object)
     return res
 
-
-def get_object_by_filename(filename):
-    for o in objects:
-        if o["filename"] == filename:
-            return o
-    return defaultdict(str)
