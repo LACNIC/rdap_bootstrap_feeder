@@ -12,12 +12,8 @@ MANDATORY_KEYS = ["url", "filename", "precedence", "kind", "python_object"]
 
 
 def eprint(*args, **kwargs):
-    print(*args, file=sys.stderr, **kwargs)
+    # print(*args, file=sys.stderr, **kwargs)
     pass
-
-
-def _print(output):
-    print("\r%s" % (output))
 
 
 class ResourceObject(dict):
@@ -113,6 +109,14 @@ class AutnumRange():
             if self.is_within(l):
                 return l
         return None
+
+    def has_fittest(self, _list):
+        """
+        :param _list: AutnumRange list of candidates
+        :return: First candidate containing self from _list
+        """
+
+        return self.get_fittest(_list) is not None
 
     def get_complement(self, _list):
         """
