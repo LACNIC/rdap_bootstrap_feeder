@@ -38,23 +38,24 @@ for o in objects_:
     python_o = json.loads(response)
     o["python_object"] = python_o
 
-for m in merges:
-    whole_python_objects = []
-    for i in m["input"]:
-        o = get_object_by_filename(i)
-        whole_python_objects.append(o)
+if __name__ == '__main__':
+    for m in merges:
+        whole_python_objects = []
+        for i in m["input"]:
+            o = get_object_by_filename(i)
+            whole_python_objects.append(o)
 
-    # merge_result = merge_multiple(whole_python_objects)
+        # merge_result = merge_multiple(whole_python_objects)
 
-    rir = get_object_by_filename("rir.asn.json")
-    nirs = get_object_by_filename("nirs.asn.json")
-    merge_result = object_minus_object(
-        rir,
-        nirs
-    )
+        rir = get_object_by_filename("rir.asn.json")
+        nirs = get_object_by_filename("nirs.asn.json")
+        merge_result = object_minus_object(
+            rir,
+            nirs
+        )
 
-    # Print to stdout
-    string = json.dumps(merge_result["python_object"])
-    print(
-        unicode(string)
-    )
+        # Print to stdout
+        string = json.dumps(merge_result["python_object"])
+        print(
+            unicode(string)
+        )
