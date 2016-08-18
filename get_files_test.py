@@ -29,18 +29,18 @@ class MergeableTest(unittest.TestCase):
         self.assertDictEqual(
             object_minus_object(
                 {
-                    "python_object": {"services": [["1"], ["http://my-rir.net"]]},
+                    "python_object": {"services": [[["1"], ["http://my-rir.net"]]]},
                     "precedence": 0,
                     "kind": AUTNUM
                 },
                 {
-                    "python_object": {"services": [["2"], ["http://my-nir.net"]]},
+                    "python_object": {"services": [[["2"], ["http://my-nir.net"]]]},
                     "precedence": 1,
                     "kind": AUTNUM
                 }
             ),
             {
-                "python_object": {"services": [["1"], ["http://my-rir.net"]]},
+                "python_object": {"services": [[["1"], ["http://my-rir.net"]]]},
                 "precedence": 0,
                 "kind": AUTNUM
             }
@@ -54,18 +54,18 @@ class MergeableTest(unittest.TestCase):
         self.assertDictEqual(
             object_minus_object(
                 {
-                    "python_object": {"services": [["1"], ["http://my-rir.net"]]},
+                    "python_object": {"services": [[["1"], ["http://my-rir.net"]]]},
                     "precedence": 0,
                     "kind": AUTNUM
                 },
                 {
-                    "python_object": {"services": [["http://my-nir.net"], ["2"]]},
+                    "python_object": {"services": [[["http://my-nir.net"], ["2"]]]},
                     "precedence": 1,
                     "kind": AUTNUM
                 }
             ),
             {
-                "python_object": {"services": [["1"], ["http://my-rir.net"]]},
+                "python_object": {"services": [[["1"], ["http://my-rir.net"]]]},
                 "precedence": 0,
                 "kind": AUTNUM
             }
@@ -79,18 +79,18 @@ class MergeableTest(unittest.TestCase):
         self.assertDictEqual(
             object_minus_object(
                 {
-                    "python_object": {"services": [["1-10"], ["http://my-rir.net"]]},
+                    "python_object": {"services": [[["1-10"], ["http://my-rir.net"]]]},
                     "precedence": 0,
                     "kind": AUTNUM
                 },
                 {
-                    "python_object": {"services": [["http://my-nir.net"], ["5-7"]]},
+                    "python_object": {"services": [[["http://my-nir.net"], ["5-7"]]]},
                     "precedence": 1,
                     "kind": AUTNUM
                 }
             ),
             {
-                "python_object": {"services": [["1-4", "8-10"], ["http://my-rir.net"]]},
+                "python_object": {"services": [[["1-4", "8-10"], ["http://my-rir.net"]]]},
                 "precedence": 0,
                 "kind": AUTNUM
             }
@@ -415,46 +415,64 @@ class ValidationTest(unittest.TestCase):
 
 
 class LibsTest(unittest.TestCase):
-    def testGetHttpsEndpoint1(self):
+    def testGetEndpointIndex1(self):
         self.assertEqual(
-            get_endpoint_index([["1", "2"], ["http://my-service.net"]]),
+            get_endpoint_index([[["1", "2"], ["http://my-service.net"]]]),
             1
         )
 
-    def testGetHttpsEndpoint2(self):
+    def testGetEndpointIndex2(self):
         self.assertEqual(
-            get_endpoint_index([["http://my-service.net"], ["1", "2"]]),
+            get_endpoint_index([[["http://my-service.net"], ["1", "2"]]]),
             0
         )
 
-    def testGetHttpsEndpoint3(self):
+    def testGetEndpointIndex3(self):
         self.assertEqual(
-            get_endpoint_index([["http://my-service.net"]]),
+            get_endpoint_index([[["http://my-service.net"]]]),
             None
         )
 
-    def testGetHttpsEndpoint4(self):
+    def testGetEndpointIndex4(self):
         self.assertEqual(
-            get_endpoint_index([[], []]),
+            get_endpoint_index([[[], []]]),
             None
         )
 
-    def testGetHttpsEndpoint5(self):
+    def testGetEndpointIndex5(self):
         self.assertEqual(
-            get_endpoint_index([]),
+            get_endpoint_index([[[]]]),
             None
         )
 
     def testGetServiceIndex1(self):
         self.assertEqual(
-            get_service_index([["1", "2"], ["http://my-service.net"]]),
+            get_service_index([[["1", "2"], ["http://my-service.net"]]]),
             0
         )
 
     def testGetServiceIndex2(self):
         self.assertEqual(
-            get_service_index([["http://my-service.net"], ["1", "2"]]),
+            get_service_index([[["http://my-service.net"], ["1", "2"]]]),
             1
+        )
+
+    def testGetEndpointList1(self):
+        self.assertEqual(
+            get_endpoint_list([[["1", "2"], ["http://my-service.net"]]]),
+            ["http://my-service.net"]
+        )
+
+    def testGetEndpointList2(self):
+        self.assertEqual(
+            get_endpoint_list([[["1", "2"], ["http://my-service.net", "http://my-other-service.net"]]]),
+            ["http://my-service.net", "http://my-other-service.net"]
+        )
+
+    def testGetServiceList1(self):
+        self.assertEqual(
+            get_service_list([[["1", "2"], ["http://my-service.net", "http://my-other-service.net"]]]),
+            ["1", "2"]
         )
 
 

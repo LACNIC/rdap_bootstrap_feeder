@@ -223,14 +223,25 @@ def get_endpoint_index(_list):
     :return: the endpoint list and index where it is
     """
 
+    _list = _list[0]  # Remove this line
     if len(_list) != 2:
         return None
+    # if len(_list) != 1:
+    #     return None
 
     for i, l in enumerate(_list):
         for j, ll in enumerate(l):
             if "http" in ll or "https" in ll:
                 return i
     return None
+
+
+def get_endpoint_list(_list):
+    index = get_endpoint_index(_list)
+    if index is None:
+        return None
+
+    return _list[0][index]  # CHANGE: _list[0] --> _list
 
 
 def get_service_index(_list):
@@ -245,7 +256,9 @@ def get_service_list(_list):
     index = get_service_index(_list)
     if index is None:
         return None
-    return _list[index]
+
+    # TODO: Assume multiple services in the same *whole_object*
+    return _list[0][index]
 
 
 def object_minus_object(whole_object1, whole_object2):
@@ -286,11 +299,17 @@ def object_minus_object(whole_object1, whole_object2):
                 lowest_to_highest = sorted([whole_object1, whole_object2], key=lambda x: x["precedence"])
                 lowest = lowest_to_highest[0]
                 highest = lowest_to_highest[1]
+
+                # print(get_endpoint_list(lowest["python_object"][k]))
+                # print(get_endpoint_list(highest["python_object"][k]))
+
+                lowest_service_list = get_service_list(lowest["python_object"][k])
+                highest_service_list = get_service_list(highest["python_object"][k])
                 new_parent_service = string_list_minus_string_list(
-                    get_service_list(lowest["python_object"][k]),
-                    get_service_list(highest["python_object"][k])
+                    lowest_service_list,
+                    highest_service_list
                 )
-                longest[k][get_service_index(longest[k])] = new_parent_service
+                longest[k][0][get_service_index(longest[k])] = new_parent_service
             else:
                 longest[k] = c + l
 
