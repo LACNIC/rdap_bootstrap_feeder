@@ -11,7 +11,7 @@ class MergeableTest(unittest.TestCase):
     def testMergeable(self):
         _object = {"python_object": {"a": [1]}, "kind": AUTNUM}
         self.assertTrue(
-            mergeable(
+            same_keys(
                 _object,
                 _object
             ))
@@ -20,14 +20,14 @@ class MergeableTest(unittest.TestCase):
         _object = {"python_object": {"a": [1]}, "kind": AUTNUM}
         strange_object = {"python_object": {"a": [1]}, "hello": "world"}
         self.assertFalse(
-            mergeable(
+            same_keys(
                 _object,
                 strange_object
             ))
 
     def testMergeWithEndpoint1(self):
         self.assertDictEqual(
-            object_minus_object(
+            substract(
                 {
                     "python_object": {"services": [[["1"], ["http://my-rir.net"]]]},
                     "precedence": 0,
@@ -52,7 +52,7 @@ class MergeableTest(unittest.TestCase):
         :return:
         """
         self.assertDictEqual(
-            object_minus_object(
+            substract(
                 {
                     "python_object": {"services": [[["1"], ["http://my-rir.net"]]]},
                     "precedence": 0,
@@ -77,7 +77,7 @@ class MergeableTest(unittest.TestCase):
         :return:
         """
         self.assertDictEqual(
-            object_minus_object(
+            substract(
                 {
                     "python_object": {"services": [[["1-10"], ["http://my-rir.net"]]]},
                     "precedence": 0,
@@ -378,7 +378,7 @@ class ValidationTest(unittest.TestCase):
         _object_copy = copy.copy(self._object)
 
         self.assertTrue(
-            validate_object(_object_copy)
+            validate_resourceobject(_object_copy)
         )
 
     def testValidateKeyNegative(self):
@@ -386,7 +386,7 @@ class ValidationTest(unittest.TestCase):
         _object_copy.pop("kind", None)
 
         self.assertFalse(
-            validate_object(_object_copy)
+            validate_resourceobject(_object_copy)
         )
 
     def testValidateKindNegative(self):
@@ -394,7 +394,7 @@ class ValidationTest(unittest.TestCase):
         _object_copy["kind"] = "my_kind"
 
         self.assertFalse(
-            validate_object(_object_copy)
+            validate_resourceobject(_object_copy)
         )
 
     def testValidatePythonObjectNegative(self):
@@ -402,7 +402,7 @@ class ValidationTest(unittest.TestCase):
         _object_copy["python_object"] = ""
 
         self.assertFalse(
-            validate_object(_object_copy)
+            validate_resourceobject(_object_copy)
         )
 
     def testValidatePrecedenceNegative(self):
@@ -410,7 +410,7 @@ class ValidationTest(unittest.TestCase):
         _object_copy["precedence"] = ""
 
         self.assertFalse(
-            validate_object(_object_copy)
+            validate_resourceobject(_object_copy)
         )
 
 
@@ -477,6 +477,7 @@ class LibsTest(unittest.TestCase):
 
 
 def main():
+    print("Performing unit tests")
     unittest.main()
 
 

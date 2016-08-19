@@ -18,44 +18,40 @@ merges = [
 
 
 def get_object_by_filename(filename):
+    """
+    :param filename:
+    :return: whole_object
+    """
     for o in objects_:
         if o["filename"] == filename:
-            return o
+            return copy.deepcopy(o)
     return defaultdict(str)
 
 
 objects_file = "objects.json"
 json_ = open(objects_file, mode="r").read()
 objects_ = json.loads(json_)["objects"]
+# Load the objects_ structure with python objects
 for o in objects_:
-    # url = o["url"]
-    # print("Connecting to %s..." % (url))
-    # print("Connected to %s." % (url))
-    # response = get(url).text
-
     response = open(o["filename"], mode="r").read()
-
     python_o = json.loads(response)
     o["python_object"] = python_o
 
+
+def main():
+    iana = get_object_by_filename("iana.asn.json")
+    iana_minus_rir = remove_service_by_endpoint(iana, endpoint="https://rdap.lacnic.net/rdap/")
+
+    rir = get_object_by_filename("rir.asn.json")
+    nirs = get_object_by_filename("nirs.asn.json")
+    rir_minus_nirs = substract(rir, nirs)
+
+    except_nirs = add_services(iana_minus_rir, rir_minus_nirs)
+
+    final_object = add_services(except_nirs, nirs)
+
+    print(unicode(final_object["python_object"]))
+
+
 if __name__ == '__main__':
-    for m in merges:
-        whole_python_objects = []
-        for i in m["input"]:
-            o = get_object_by_filename(i)
-            whole_python_objects.append(o)
-
-        # merge_result = merge_multiple(whole_python_objects)
-
-        rir = get_object_by_filename("rir.asn.json")
-        nirs = get_object_by_filename("nirs.asn.json")
-        merge_result = object_minus_object(
-            rir,
-            nirs
-        )
-
-        # Print to stdout
-        string = json.dumps(merge_result["python_object"])
-        print(
-            unicode(string)
-        )
+    main()

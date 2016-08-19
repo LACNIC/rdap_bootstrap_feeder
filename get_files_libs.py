@@ -1,6 +1,6 @@
 from __future__ import print_function
 from collections import defaultdict
-import sys
+import copy
 
 from get_files_exceptions import *
 
@@ -26,9 +26,6 @@ class ResourceObject(dict):
         self["kind"] = NOKIND
         self["python_object"] = {}
 
-    def __str__(self):
-        return str(self.new)
-
     def add_python_object(self, python_object):
         self["python_object"] = python_object
 
@@ -36,12 +33,6 @@ class ResourceObject(dict):
 class AutnumRange():
     start = 0
     end = 0
-
-    def __init__(self, *args, **kwargs):
-        if "string" in kwargs.keys():
-            return self.__init_from_string__(kwargs["string"])
-
-        return self.__init_from_start_end__(args[0], args[1])
 
     def __init_from_start_end__(self, start, end):
         self.start = start
@@ -52,7 +43,6 @@ class AutnumRange():
             msg = "Argument not of type str: %s" % string
             eprint(msg)
             raise BadArgumentException(msg)
-            return
 
         if "-" in string:
             self.start = int(string.split("-")[0])
@@ -61,9 +51,15 @@ class AutnumRange():
             self.start = int(string)
             self.end = self.start
 
+    def __init__(self, *args, **kwargs):
+        if "string" in kwargs.keys():
+            return self.__init_from_string__(kwargs["string"])
+        else:
+            return self.__init_from_start_end__(args[0], args[1])
+
     def __str__(self):
         if self.start == self.end:
-            return "%s" % (self.start)
+            return "%s" % self.start
 
         if self.start != self.end:
             return "%s-%s" % (self.start, self.end)
@@ -73,8 +69,8 @@ class AutnumRange():
             eprint("Not an Autnum Range passed")
             return False
 
-        return another_greater_autnumrange.start <= self.start <= another_greater_autnumrange.end \
-               and another_greater_autnumrange.start <= self.end <= another_greater_autnumrange.end
+        return another_greater_autnumrange.start <= self.start <= another_greater_autnumrange.end and \
+               another_greater_autnumrange.start <= self.end <= another_greater_autnumrange.end
 
     def minus(self, another_inner_autnumrange):
         """
@@ -137,7 +133,8 @@ class AutnumRange():
         for l in _list:
 
             fittest = l.get_fittest(res)
-            if fittest is None: continue
+            if fittest is None:
+                continue
 
             complement = fittest.get_complement(res)
             res = fittest.minus(l)
@@ -147,8 +144,13 @@ class AutnumRange():
         return sorted(res, key=str)
 
 
-def validate_object(_object):
-    if type(_object) is not type(ResourceObject()):
+def validate_resourceobject(_object):
+    """
+    :param _object: whole python object with metadata
+    :return:
+    """
+
+    if not isinstance(_object, ResourceObject) and type(_object) is not dict:
         eprint("Object type is not dict")
         return False
 
@@ -158,7 +160,7 @@ def validate_object(_object):
 
     kind_ = _object["kind"]
     if kind_ not in VALID_KINDS:
-        eprint("Object has not got a valid kind (%s)" % (kind_))
+        eprint("Object has not got a valid kind (%s)" % kind_)
         return False
 
     if not type(_object["python_object"]) is dict:
@@ -172,7 +174,7 @@ def validate_object(_object):
     return True
 
 
-def mergeable(object1, object2):
+def same_keys(object1, object2):
     if "kind" not in object1.keys() or "kind" not in object2.keys():
         return False
 
@@ -183,23 +185,6 @@ def mergeable(object1, object2):
     s1 = set(object1.keys())
     s2 = set(object2.keys())
     return s1.issubset(s2) or s1.issuperset(s2)
-
-
-# def merge_autnumranges_list(autnum_ranges1, autnum_ranges2):
-#     """
-#
-#     :param autnum_tanges1: low-precedence AutnumRange list
-#     :param autnum_renages2: high-precedence AutnumRange list
-#     :return: autnum_ranges1 string_list_minus_string_list autnum_ranges2 AutnumRange list
-#     """
-#     if type(autnum_ranges1) is not list or type(autnum_ranges2) is not list:
-#         return autnum_ranges1
-#
-#     res = []
-#     for autnum_range1 in autnum_ranges1:
-#         for autnum_range2 in autnum_ranges2:
-#             res += autnum_range1.string_list_minus_string_list(autnum_range2)
-#     return res
 
 
 def string_list_minus_string_list(asns1, asns2):
@@ -229,11 +214,9 @@ def get_endpoint_index(_list):
     :return: the endpoint list and index where it is
     """
 
-    _list = _list[0]  # Remove this line
+    _list = _list[0]  # CHANGE Remove this line
     if len(_list) != 2:
         return None
-    # if len(_list) != 1:
-    #     return None
 
     for i, l in enumerate(_list):
         for j, ll in enumerate(l):
@@ -243,6 +226,10 @@ def get_endpoint_index(_list):
 
 
 def get_endpoint_list(_list):
+    """
+    :param _list: [["service-1", "service-2"], ["http://my-service-endpoint.net"]]
+    :return: the index in which the service endpoint list is at
+    """
     index = get_endpoint_index(_list)
     if index is None:
         return None
@@ -267,17 +254,19 @@ def get_service_list(_list):
     return _list[0][index]
 
 
-def object_minus_object(whole_object1, whole_object2):
+def substract(whole_object1, whole_object2):
     """
-    :param whole_object1:
-    :param whole_object2:
-    :return:
+        :param whole_object1:
+        :param whole_object2:
+        :return:
     """
-    object1 = whole_object1["python_object"]
-    object2 = whole_object2["python_object"]
+    whole_object1_copy = copy.deepcopy(whole_object1)
+    whole_object2_copy = copy.deepcopy(whole_object2)
+    object1 = whole_object1_copy["python_object"]
+    object2 = whole_object2_copy["python_object"]
 
-    if not mergeable(whole_object1, whole_object2):
-        eprint("Not mergeable objects")
+    if not same_keys(whole_object1, whole_object2):
+        eprint("Not same_keys objects")
         return defaultdict(str)
 
     kind = whole_object1["kind"]
@@ -299,7 +288,7 @@ def object_minus_object(whole_object1, whole_object2):
             if kind == NETWORK:
                 longest[k] = c + l
             elif kind == AUTNUM:
-                lowest_to_highest = sorted([whole_object1, whole_object2], key=lambda x: x["precedence"])
+                lowest_to_highest = sorted([whole_object1_copy, whole_object2_copy], key=lambda x: x["precedence"])
                 lowest = lowest_to_highest[0]
                 highest = lowest_to_highest[1]
 
@@ -313,13 +302,82 @@ def object_minus_object(whole_object1, whole_object2):
             else:
                 longest[k] = c + l
 
-    whole_object1["python_object"] = longest
-    return whole_object1
+    whole_object1_copy["python_object"] = longest
+    return whole_object1_copy
 
 
-def merge_multiple(_objects):
-    res = _objects[0]
-    for _object in _objects[1:]:
-        res = object_minus_object(res, _object)
-    return res
+def add(whole_object1, whole_object2):
+    """
+    :param whole_object1:
+    :param whole_object2:
+    :return: A simple list, the result of whole_object1 services list and whole_object2
+            services list concatenated
+    """
 
+    object1_service_list = get_service_list(whole_object1["python_object"]["services"])
+    object2_service_list = get_service_list(whole_object2["python_object"]["services"])
+
+    addition = object1_service_list + object2_service_list
+    return addition
+
+
+def add_services(whole_object1, whole_object2):
+    """
+    :param whole_object1:
+    :param whole_object2:
+    :return: whole_object2 services copied into whole_object1
+    """
+
+    whole_object1_copy = copy.deepcopy(whole_object1)
+    whole_object2_copy = copy.deepcopy(whole_object2)
+
+    for service in whole_object2_copy["python_object"]["services"]:
+        whole_object1_copy["python_object"]["services"].append(service)
+
+    return whole_object1_copy
+
+
+def remove_service_by_endpoint(whole_object, endpoint=""):
+    """
+    :param whole_object: a whole object with multiple services within
+    :param endpoint:
+    :return:
+    """
+    whole_object_copy = copy.deepcopy(whole_object)
+    res = []
+    for service in whole_object_copy["python_object"]["services"]:
+        service = [service]  # REMOVE this line after refactor
+        endpoint_list = get_endpoint_list(service)
+        if endpoint not in endpoint_list:
+            res.append(service[0])  # CHANGE service[0] --> service
+
+    whole_object_copy["python_object"]["services"] = res
+    return whole_object_copy
+
+
+def services_have_endpoint(whole_object, endpoint=""):
+    """
+    :param whole_object: a whole object with multiple services within
+    :param endpoint:
+    :return:
+    """
+    for service in whole_object["python_object"]["services"]:
+        service = [service]  # REMOVE this line after refactor
+        endpoint_list = get_endpoint_list(service)
+        if endpoint in endpoint_list:
+            return True
+
+    return False
+
+
+def services_have_endpoints(whole_object, endpoints=[]):
+    """
+    :param whole_object: a whole object with multiple services within
+    :param endpoint:
+    :return:
+    """
+
+    for endpoint in endpoints:
+        if not services_have_endpoint(whole_object, endpoint=endpoint):
+            return False
+    return True
