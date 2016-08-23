@@ -3,7 +3,7 @@ from __future__ import print_function
 import copy
 from collections import defaultdict
 
-from libs.exceptions.exceptions import *
+# from libs.exceptions.exceptions import *
 
 NETWORK = "network"
 AUTNUM = "autnum"
@@ -51,7 +51,7 @@ class AutnumRange():
         if type(string) is not str:
             msg = "Argument not of type str: %s" % string
             eprint(msg)
-            raise BadArgumentException(msg)
+            # raise BadArgumentException(msg)
 
         if "-" in string:
             self.start = int(string.split("-")[0])
