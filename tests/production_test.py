@@ -68,12 +68,12 @@ class FinalTest(unittest.TestCase):
             nirs
         )
 
-        substraction_autnumranges = []
+        substraction_autnumranges = AutnumRangeList()
         for asn_res in get_service_list(substraction["python_object"]["services"]):
             autnumrange_res = AutnumRange(string=asn_res)
             substraction_autnumranges.append(autnumrange_res)
 
-        rir_autnumranges = []
+        rir_autnumranges = AutnumRangeList()
         for rir_res in get_service_list(rir["python_object"]["services"]):
             rir_autnumranges.append(AutnumRange(string=str(rir_res)))
 

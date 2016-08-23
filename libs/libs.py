@@ -1,8 +1,9 @@
 from __future__ import print_function
-from collections import defaultdict
-import copy
 
-from get_files_exceptions import *
+import copy
+from collections import defaultdict
+
+from libs.exceptions.exceptions import *
 
 NETWORK = "network"
 AUTNUM = "autnum"
@@ -28,6 +29,14 @@ class ResourceObject(dict):
 
     def add_python_object(self, python_object):
         self["python_object"] = python_object
+
+
+class AutnumRangeList(list):
+    def total_count(self):
+        count = 0
+        for asn_range in self:
+            count += asn_range.end - asn_range.start + 1
+        return count
 
 
 class AutnumRange():
