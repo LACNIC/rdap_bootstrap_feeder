@@ -1,6 +1,8 @@
 from __future__ import print_function
+
 import unittest
-from get_files_libs import *
+
+from libs.libs import *
 
 
 class AddListsTest(unittest.TestCase):

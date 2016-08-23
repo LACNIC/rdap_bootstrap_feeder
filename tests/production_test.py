@@ -1,9 +1,10 @@
 from __future__ import print_function
-import unittest
-from get_files_libs import *
-from get_files import get_object_by_filename  # REMOVE: Try to remove this import
+
 import json
-import copy
+import unittest
+
+from get_files import get_object_by_filename  # REMOVE: Try to remove this import
+from libs.libs import *
 
 
 class FinalTest(unittest.TestCase):

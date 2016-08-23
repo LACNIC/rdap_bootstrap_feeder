@@ -1,6 +1,7 @@
-import unittest
-from get_files_libs import *
 import copy
+import unittest
+
+from libs.libs import *
 
 
 class MergeableTest(unittest.TestCase):
