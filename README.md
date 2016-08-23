@@ -3,9 +3,7 @@ Set of scripts that provide the RDAP Bootstrap server with up-to-date Internet N
 
 ## Tests
 ```
-python tests/add_test.py
-python tests/base_test.py
-python tests/production_test.py
+python tests/tests.py
 ```
 
 ## Configs

@@ -1,4 +1,3 @@
-import copy
 import unittest
 import sys
 from os import path
@@ -293,7 +292,7 @@ class AutnumRangeFittestTest(unittest.TestCase):
         )
 
 
-class AutnumRangeFittestTest(unittest.TestCase):
+class AutnumRangeComplementTest(unittest.TestCase):
     """
         Testing the AutnumRange *complement* function
     """
