@@ -2,9 +2,12 @@ from __future__ import print_function
 
 import json
 import unittest
+import sys
+from os import path
+sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
+from libs.libs import *
 
 from get_files import get_object_by_filename  # REMOVE: Try to remove this import
-from libs.libs import *
 
 
 class FinalTest(unittest.TestCase):
@@ -153,15 +156,15 @@ objects_ = {}
 
 def main():
     print("Performing production-like tests (they may last a bit)")
-    objects_file = "objects.json"
+    objects_file = "resources/objects.json"
     json_ = open(objects_file, mode="r").read()
     objects_ = json.loads(json_)["objects"]
     for o in objects_:
         text = open(o["filename"], mode="r").read()
         python_o = json.loads(text)
         o["python_object"] = python_o
-    unittest.main()
 
+    unittest.main()
 
 if __name__ == '__main__':
     main()

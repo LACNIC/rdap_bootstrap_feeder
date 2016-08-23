@@ -1,8 +1,9 @@
 import copy
 import unittest
-
+import sys
+from os import path
+sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
 from libs.libs import *
-
 
 class MergeableTest(unittest.TestCase):
     """

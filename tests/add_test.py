@@ -1,9 +1,10 @@
 from __future__ import print_function
 
 import unittest
-
+import sys
+from os import path
+sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
 from libs.libs import *
-
 
 class AddListsTest(unittest.TestCase):
     def testAdd(self):
@@ -117,7 +118,6 @@ class ServiceOperationsTest(unittest.TestCase):
 
 def main():
     unittest.main()
-
 
 if __name__ == '__main__':
     main()
