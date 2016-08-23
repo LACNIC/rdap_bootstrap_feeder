@@ -25,7 +25,8 @@ The main configuration file is `resources/objects.json`, containing information 
     }
   ]
 }
-``
+```
+
 ## Running the script
 ```
 python get_files.py
