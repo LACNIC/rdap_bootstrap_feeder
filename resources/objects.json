@@ -20,6 +20,34 @@
             "precedence": 1, 
             "python_object": {}, 
             "url": "http://data.iana.org/rdap/asn.json"
+        },
+        {
+            "filename": "resources/all.v4.json",
+            "kind": "inet",
+            "precedence": 1,
+            "python_object": {},
+            "url": "https://ws.lacnic.net/ext/minority-space/v4.json"
+        },
+        {
+            "filename": "resources/all.v6.json",
+            "kind": "inet6",
+            "precedence": 1,
+            "python_object": {},
+            "url": "https://ws.lacnic.net/ext/minority-space/v6.json"
+        },
+        {
+            "filename": "resources/nirs.v4.json",
+            "kind": "inet6",
+            "precedence": 1,
+            "python_object": {},
+            "url": "https://ws.lacnic.net/ext/nir-space/v4.json"
+        },
+        {
+            "filename": "resources/nirs.v6.json",
+            "kind": "inet6",
+            "precedence": 1,
+            "python_object": {},
+            "url": "https://ws.lacnic.net/ext/nir-space/v6.json"
         }
     ]
 }
