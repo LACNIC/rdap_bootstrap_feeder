@@ -1,25 +1,25 @@
 {
-  "objects": [
-    {
-      "url": "/rir-space/asn.json?cache=false",
-      "filename": "resources/rir.asn.json",
-      "precedence": 2,
-      "kind": "autnum",
-      "python_object": {}
-    },
-    {
-      "url": "/nir-space/asn.json?cache=false",
-      "filename": "resources/nirs.asn.json",
-      "precedence": 3,
-      "kind": "autnum",
-      "python_object": {}
-    },
-    {
-      "url": "http://data.iana.org/rdap/asn.json",
-      "filename": "resources/iana.asn.json",
-      "precedence": 1,
-      "kind": "autnum",
-      "python_object": {}
-    }
-  ]
+    "objects": [
+        {
+            "filename": "resources/rir.asn.json", 
+            "kind": "autnum", 
+            "precedence": 2, 
+            "python_object": {}, 
+            "url": "https://ws.lacnic.net/ext/rir-space/asn.json?cache=false"
+        }, 
+        {
+            "filename": "resources/nirs.asn.json", 
+            "kind": "autnum", 
+            "precedence": 3, 
+            "python_object": {}, 
+            "url": "https://ws.lacnic.net/ext/nir-space/asn.json?cache=false"
+        }, 
+        {
+            "filename": "resources/iana.asn.json", 
+            "kind": "autnum", 
+            "precedence": 1, 
+            "python_object": {}, 
+            "url": "http://data.iana.org/rdap/asn.json"
+        }
+    ]
 }
