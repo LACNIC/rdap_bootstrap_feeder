@@ -26,7 +26,7 @@ for o in objects_:
     o["python_object"] = python_o
 
 
-def main():
+def main(outputdir):
     iana = get_object_by_filename("iana.asn.json")
     iana_minus_rir = remove_service_by_endpoint(iana, endpoint="https://rdap.lacnic.net/rdap/")
 
@@ -39,7 +39,7 @@ def main():
     final_object = add_services(except_nirs, nirs)["python_object"]
 
     # print to stdout
-    filename = 'resources/final.asn.json'
+    filename = "%s/final.asn.json" % outputdir
     final_object_dump = json.dumps(
         final_object,
         indent=4,
@@ -53,4 +53,20 @@ def main():
 
 if __name__ == '__main__':
     print "Generating ASNs file..."
-    main()
+
+    outputdir = 'resources'
+
+    argv = sys.argv[1:]
+    try:
+        opts, args = getopt.getopt(argv, ":o:", ["odir="])
+    except getopt.GetoptError:
+        print sys.argv[0], ' -o <outputdir>'
+        sys.exit(2)
+
+    for opt, arg in opts:
+        if opt in ("-o", "--odir"):
+            outputdir = arg
+
+    print "Output dir: %s" % outputdir
+
+    main(outputdir=outputdir)
