@@ -1,5 +1,7 @@
 import sys, getopt
 import json
+from datetime import datetime
+import tzlocal
 
 from libs.libs import *
 
@@ -37,6 +39,8 @@ def main(outputdir):
     except_nirs = add_services(iana_minus_rir, rir_minus_nirs)
 
     final_object = add_services(except_nirs, nirs)["python_object"]
+
+    final_object['publication'] = datetime.now(tzlocal.get_localzone()).strftime("%Y-%m-%d %H:%M:%S%Z:00")
 
     # print to stdout
     filename = "%s/final.asn.json" % outputdir
