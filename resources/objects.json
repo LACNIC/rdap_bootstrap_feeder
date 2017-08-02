@@ -1,18 +1,19 @@
 {
+    "baseurl": "http://ws.lacnic.net",
     "objects": [
         {
             "filename": "resources/rir.asn.json", 
             "kind": "autnum", 
             "precedence": 2, 
-            "python_object": {}, 
-            "url": "https://ws.lacnic.net/ext/rir-space/asn.json?cache=false"
-        }, 
+            "python_object": {},
+            "url": "/ext/rir-space/asn.json?cache=false"
+        },
         {
             "filename": "resources/nirs.asn.json", 
             "kind": "autnum", 
             "precedence": 3, 
             "python_object": {}, 
-            "url": "https://ws.lacnic.net/ext/nir-space/asn.json?cache=false"
+            "url": "/ext/nir-space/asn.json?cache=false"
         }, 
         {
             "filename": "resources/iana.asn.json", 
@@ -26,28 +27,28 @@
             "kind": "inet",
             "precedence": 1,
             "python_object": {},
-            "url": "https://ws.lacnic.net/ext/minority-space/v4.json"
+            "url": "/ext/minority-space/v4.json?cache=false"
         },
         {
             "filename": "resources/all.v6.json",
             "kind": "inet6",
             "precedence": 1,
             "python_object": {},
-            "url": "https://ws.lacnic.net/ext/minority-space/v6.json"
+            "url": "/ext/minority-space/v6.json?cache=false"
         },
         {
             "filename": "resources/nirs.v4.json",
             "kind": "inet6",
             "precedence": 1,
             "python_object": {},
-            "url": "https://ws.lacnic.net/ext/nir-space/v4.json"
+            "url": "/ext/nir-space/v4.json?cache=false"
         },
         {
             "filename": "resources/nirs.v6.json",
             "kind": "inet6",
             "precedence": 1,
             "python_object": {},
-            "url": "https://ws.lacnic.net/ext/nir-space/v6.json"
+            "url": "/ext/nir-space/v6.json?cache=false"
         }
     ]
 }
