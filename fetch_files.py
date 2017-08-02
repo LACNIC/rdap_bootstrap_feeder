@@ -21,8 +21,13 @@ for opt, arg in opts:
 objects_file = "resources/objects.json"
 json_ = open(objects_file, mode='r').read()
 objects_ = json.loads(json_)["objects"]
+baseurl = json.loads(json_)['baseurl']
 for o in objects_:
+
     url = o['url']
+    if url[0] == '/':
+        url = baseurl + url
+
     response = requests.get(url)
 
     if response.status_code != 200:
